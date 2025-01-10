@@ -43,9 +43,14 @@ fun getGitCommitCount(): Int {
 }
 
 fun getVersionText(): String {
+    val processChanges = "git diff-index --name-only HEAD --".runCommand()
+    var dirty = ""
+    if (processChanges.trim().isNotEmpty())
+        dirty = "-DIRTY"
+
     val processDescribe = "git describe".runCommand()
     val processDate = "date +%Y-%m-%d".runCommand()
-    return processDescribe.trim() + "-" + processDate.trim()
+    return processDescribe.trim() + dirty + "-" + processDate.trim()
 }
 
 fun getLatestGitHash(): String {
