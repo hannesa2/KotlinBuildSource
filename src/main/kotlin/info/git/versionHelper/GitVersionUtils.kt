@@ -43,7 +43,8 @@ fun getGitCommitCount(): Int {
 }
 
 fun getVersionText(): String {
-    val processChanges = "git diff-index --name-only HEAD --".runCommand()
+    // val processChanges = "git diff-index --name-only HEAD --".runCommand()
+    val processChanges = "git status --porcelain".runCommand()
     var dirty = ""
     if (processChanges.trim().isNotEmpty())
         dirty = "-DIRTY"
