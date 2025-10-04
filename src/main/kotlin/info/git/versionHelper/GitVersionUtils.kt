@@ -1,28 +1,6 @@
 package info.git.versionHelper
 
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.concurrent.TimeUnit
-
-@JvmOverloads
-fun String.runCommand(workingDir: File = File("./")): String {
-    val parts = this.split("\\s".toRegex())
-    val proc = ProcessBuilder(*parts.toTypedArray())
-        .directory(workingDir)
-        .redirectOutput(ProcessBuilder.Redirect.PIPE)
-        .redirectError(ProcessBuilder.Redirect.PIPE)
-        .start()
-
-    proc.waitFor(1, TimeUnit.MINUTES)
-    return proc.inputStream.bufferedReader().readText().trim()
-}
-
-@Suppress("SimpleDateFormat")
-fun getDate(): String {
-    val timestamp = SimpleDateFormat("yyyy.MM.dd-HH:mm").format(Date())
-    return timestamp
-}
+import info.shell.runCommand
 
 fun getGitOriginRemote(): String {
     val process = "git remote -v".runCommand()
@@ -50,12 +28,16 @@ fun getVersionText(): String {
         dirty = "-DIRTY"
 
     val processDescribe = "git describe".runCommand()
-    val processDate = "date +%Y-%m-%d".runCommand()
-    return processDescribe.trim() + dirty + "-" + processDate.trim()
+    return processDescribe.trim() + dirty
 }
 
 fun getLatestGitHash(): String {
     val process = "git rev-parse --short HEAD".runCommand()
+    return process.trim()
+}
+
+fun getLatestCommitText(): String {
+    val process = "git log -1 --pretty=%B".runCommand()
     return process.trim()
 }
 
