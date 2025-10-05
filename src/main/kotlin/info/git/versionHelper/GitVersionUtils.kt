@@ -28,8 +28,8 @@ fun getVersionText(): String {
         "-DIRTY"
     } else ""
 
-    val processDescribe = "git describe".runCommand()
-    return processDescribe.trim() + dirty
+    val givenVersion = System.getenv("tag") ?: "git describe".runCommand().trim()
+    return givenVersion + dirty
 }
 
 fun getLatestGitHash(): String {
