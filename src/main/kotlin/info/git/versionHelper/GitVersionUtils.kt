@@ -21,7 +21,7 @@ fun getGitCommitCount(offset: Int = 0): Int {
 }
 
 fun getVersionText(): String {
-     val processChanges = "git diff-index --name-only HEAD --".runCommand()
+    val processChanges = "git diff-index --name-only HEAD --".runCommand()
 //    val processChanges = "git status --porcelain".runCommand()
     val dirty = if (processChanges.trim().isNotEmpty()) {
         println("git status is not clean:\n $processChanges")
@@ -39,7 +39,7 @@ fun getLatestGitHash(): String {
 
 fun getLatestCommitText(): String {
     val process = "git log -1 --pretty=%B".runCommand()
-    return process.trim()
+    return process.split("\n")[0].trim()
 }
 
 fun getSHA1(): String {
