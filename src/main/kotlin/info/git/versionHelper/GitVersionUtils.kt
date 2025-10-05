@@ -15,17 +15,18 @@ fun getGitOriginRemote(): String {
         ?.trim()!!
 }
 
-fun getGitCommitCount(): Int {
+fun getGitCommitCount(offset: Int = 0): Int {
     val process = "git rev-list HEAD --count".runCommand()
-    return process.toInt() + 580
+    return process.toInt() + offset
 }
 
 fun getVersionText(): String {
-    // val processChanges = "git diff-index --name-only HEAD --".runCommand()
-    val processChanges = "git status --porcelain".runCommand()
-    var dirty = ""
-    if (processChanges.trim().isNotEmpty())
-        dirty = "-DIRTY"
+     val processChanges = "git diff-index --name-only HEAD --".runCommand()
+//    val processChanges = "git status --porcelain".runCommand()
+    val dirty = if (processChanges.trim().isNotEmpty()) {
+        println("git status is not clean:\n $processChanges")
+        "-DIRTY"
+    } else ""
 
     val processDescribe = "git describe".runCommand()
     return processDescribe.trim() + dirty
