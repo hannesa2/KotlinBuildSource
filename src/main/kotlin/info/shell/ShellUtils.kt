@@ -36,7 +36,7 @@ fun getUnixCreateTime() = System.currentTimeMillis() / 1000
 @Suppress("SimpleDateFormat")
 fun getDate(onlyMonth: Boolean = false): String {
     val timestamp = if (onlyMonth)
-        SimpleDateFormat("yyyy.MM").format(Date())
+        SimpleDateFormat("yy-MM").format(Date())
     else
         SimpleDateFormat("yyyy.MM.dd-HH:mm").format(Date())
     return timestamp
