@@ -22,7 +22,7 @@ fun getReleaseNotes(filter: String? = null): String {
     return prev
 }
 
-fun getTagGroupedGitlog(filter: String? = null, filename: String): String {
+fun getTagGroupedGitlog(filter: String? = null, filename: String, verbose: Boolean = false): String {
     val logEntries = mutableListOf<LogEntry>()
     val tags = "git log --no-walk --tags --pretty=format:'%d' --abbrev-commit".runCommand()
         .split("\n")
@@ -42,13 +42,14 @@ fun getTagGroupedGitlog(filter: String? = null, filename: String): String {
             .split("\n")
             .filter { filter == null || it.contains(filter) }
             .forEach {
-                println(
-                    "$element,$code: ${
-                        it
-                            .replace("$filter-", "")
-                            .substringBefore("|")
-                    } date=${it.substringAfter("|")}"
-                )
+                if (verbose)
+                    println(
+                        "$element,$code: ${
+                            it
+                                .replace("$filter-", "")
+                                .substringBefore("|")
+                        } date=${it.substringAfter("|")}"
+                    )
                 logEntries.add(
                     LogEntry(
                         version = element,
