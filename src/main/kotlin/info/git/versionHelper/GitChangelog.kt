@@ -60,6 +60,12 @@ fun getTagGroupedGitlog(filter: String? = null, filename: String, verbose: Boole
                 )
             }
     }
+    val file = File(filename)
+    if (!file.exists()) {
+        val dir = File(filename.substringBeforeLast("/"))
+        println("create path =${dir}")
+        dir.mkdirs()
+    }
     File(filename).writeText(Json.encodeToString(logEntries))
     return filename
 }
