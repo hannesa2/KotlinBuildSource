@@ -44,18 +44,12 @@ fun getTagGroupedGitlog(filter: String? = null, filename: String, verbose: Boole
     tags.forEachIndexed { i, element ->
         if (i == tags.count() - 1) return@forEachIndexed
         val code = "git rev-list $element --count".runCommand()
+        if (verbose)
+            println("git log --no-merges --pretty=format:%f|%ad $element...${tags[i + 1]}")
         "git log --no-merges --pretty=format:%f|%ad $element...${tags[i + 1]}".runCommand()
             .split("\n")
             .filter { filter == null || it.contains(filter) }
             .forEach {
-                if (verbose)
-                    println(
-                        "$element,$code: ${
-                            it
-                                .replace("$filter-", "")
-                                .substringBefore("|")
-                        } date=${it.substringAfter("|")}"
-                    )
                 logEntries.add(
                     LogEntry(
                         version = element,
