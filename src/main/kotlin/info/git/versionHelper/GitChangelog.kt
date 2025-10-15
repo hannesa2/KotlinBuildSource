@@ -24,9 +24,13 @@ fun getReleaseNotes(filter: String? = null): String {
 
 fun getTagGroupedGitlog(filter: String? = null, filename: String, verbose: Boolean = false): String {
     val logEntries = mutableListOf<LogEntry>()
+    if (verbose)
+        println("plain=" + "git log --no-walk --tags --pretty=format:'%d' --abbrev-commit".runCommand())
+    // split lines like '(tag: refs/tags/3.7.1)'
     val tags = "git log --no-walk --tags --pretty=format:'%d' --abbrev-commit".runCommand()
         .split("\n")
-        .map { it.substringAfterLast("/") }
+        .map { it.replace("refs/tags/", "") }
+        .map { it.substringAfterLast(" ") }
         .map { it.substringBefore(")") }
         .toMutableList().also {
             it.add(0, "HEAD")
@@ -35,6 +39,8 @@ fun getTagGroupedGitlog(filter: String? = null, filename: String, verbose: Boole
                 "git rev-list --max-parents=0 HEAD".runCommand() // add initial commit
             )
         }
+    if (verbose)
+        println(tags)
     tags.forEachIndexed { i, element ->
         if (i == tags.count() - 1) return@forEachIndexed
         val code = "git rev-list $element --count".runCommand()
