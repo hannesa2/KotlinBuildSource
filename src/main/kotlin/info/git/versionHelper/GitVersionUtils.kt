@@ -24,7 +24,9 @@ fun getVersionText(): String {
     val processChanges = "git diff-index --name-only HEAD --".runCommand()
 //    val processChanges = "git status --porcelain".runCommand()
     val dirty = if (processChanges.trim().isNotEmpty()) {
-        println("git status is not clean:\n $processChanges")
+        // split lines by TAB (10) and add a leading space for better visibility
+        println { "git status".italic+" is not clean, changes are:" }
+        processChanges.split(10.toChar()).forEach { println { " $it".red.bold } }
         "-DIRTY"
     } else ""
 
