@@ -50,14 +50,15 @@ fun getTagGroupedGitlog(filter: String? = null, filename: String, logger: Logger
             .split("\n")
             .filter { filter == null || it.contains(filter) }
             .forEach {
-                logEntries.add(
-                    LogEntry(
-                        version = element,
-                        code = code.toInt(),
-                        message = it.replace("$filter-", "").substringBefore("|"),
-                        date = it.substringAfter("|")
-                    )
+                val message = it.replace("$filter-", "").substringBefore("|")
+                logger?.debug("commit=$message")
+                val entry = LogEntry(
+                    version = element,
+                    code = code.toInt(),
+                    message = message,
+                    date = it.substringAfter("|")
                 )
+                logEntries.add(entry)
             }
     }
     val file = File(filename)
