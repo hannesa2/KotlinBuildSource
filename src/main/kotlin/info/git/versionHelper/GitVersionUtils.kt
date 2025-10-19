@@ -34,17 +34,8 @@ fun getVersionText(): String {
     return givenVersion + dirty
 }
 
-fun getLatestGitHash(): String {
-    val process = "git rev-parse --short HEAD".runCommand()
-    return process.trim()
-}
+fun getLatestGitHash() = "git rev-parse --short HEAD".runCommand().trim()
 
-fun getLatestCommitText(): String {
-    val process = "git log -1 --pretty=%B".runCommand()
-    return process.split("\n")[0].trim()
-}
+fun getLatestCommitText()= "git log -1 --pretty=%B".runCommand().split("\n")[0].trim()
 
-fun getSHA1(): String {
-    val process = "git rev-parse HEAD".runCommand()
-    return process.trim()
-}
+fun getSHA1()= "git rev-parse HEAD".runCommand().trim()
