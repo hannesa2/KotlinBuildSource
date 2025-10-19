@@ -30,6 +30,7 @@ fun getTagGroupedGitlog(filter: String? = null, filename: String, verbose: Boole
     val tags = "git log --no-walk --tags --pretty=format:'%d' --abbrev-commit".runCommand()
         .split("\n")
         .map { it.replace("refs/tags/", "") }
+        .map { it.substringBefore(",") }
         .map { it.substringAfterLast(" ") }
         .map { it.substringBefore(")") }
         .toMutableList().also {
