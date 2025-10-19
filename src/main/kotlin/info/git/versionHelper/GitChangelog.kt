@@ -41,7 +41,7 @@ fun getTagGroupedGitlog(filter: String? = null, filename: String, verbose: Boole
             )
         }
     if (verbose)
-        println(tags)
+        println("tags=$tags")
     tags.forEachIndexed { i, element ->
         if (i == tags.count() - 1) return@forEachIndexed
         val code = "git rev-list $element --count".runCommand()
@@ -51,14 +51,16 @@ fun getTagGroupedGitlog(filter: String? = null, filename: String, verbose: Boole
             .split("\n")
             .filter { filter == null || it.contains(filter) }
             .forEach {
-                logEntries.add(
-                    LogEntry(
-                        version = element,
-                        code = code.toInt(),
-                        message = it.replace("$filter-", "").substringBefore("|"),
-                        date = it.substringAfter("|")
-                    )
+                val message = it.replace("$filter-", "").substringBefore("|")
+//                if (verbose)
+//                    println(message)
+                val entry = LogEntry(
+                    version = element,
+                    code = code.toInt(),
+                    message = message,
+                    date = it.substringAfter("|")
                 )
+                logEntries.add(entry)
             }
     }
     val file = File(filename)
