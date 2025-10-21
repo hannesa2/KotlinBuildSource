@@ -29,6 +29,7 @@ fun getTagGroupedGitlog(filter: String? = null, filename: String, verbose: Boole
     // split lines like '(tag: refs/tags/3.7.1)'
     val tags = "git log --no-walk --tags --pretty=format:'%d' --abbrev-commit".runCommand()
         .split("\n")
+        .map { it.replace("HEAD, ", "") } // eg. (HEAD, tag: 3.8.2-beta14)
         .map { it.replace("refs/tags/", "") }
         .map { it.substringBefore(",") }
         .map { it.substringAfterLast(" ") }
