@@ -2,6 +2,7 @@ package info.git.versionHelper
 
 import info.shell.runCommand
 import kotlinx.serialization.json.Json
+import org.gradle.api.logging.Logger
 import java.io.File
 
 fun getReleaseNotes(filter: String? = null): String {
@@ -22,14 +23,15 @@ fun getReleaseNotes(filter: String? = null): String {
     return prev
 }
 
-fun getTagGroupedGitlog(filter: String? = null, filename: String, verbose: Boolean = false): String {
+fun getTagGroupedGitlog(filter: String? = null, filename: String, logger: Logger? = null): String {
     val logEntries = mutableListOf<LogEntry>()
-    if (verbose)
-        println("plain=" + "git log --no-walk --tags --pretty=format:'%d' --abbrev-commit".runCommand())
+    logger?.info("plain=" + "git log --no-walk --tags --pretty=format:'%d' --abbrev-commit".runCommand())
     // split lines like '(tag: refs/tags/3.7.1)'
     val tags = "git log --no-walk --tags --pretty=format:'%d' --abbrev-commit".runCommand()
         .split("\n")
+        .map { it.replace("HEAD, ", "") } // eg. (HEAD, tag: 3.8.2-beta14)
         .map { it.replace("refs/tags/", "") }
+        .map { it.substringBefore(",") }
         .map { it.substringAfterLast(" ") }
         .map { it.substringBefore(")") }
         .toMutableList().also {
@@ -39,13 +41,11 @@ fun getTagGroupedGitlog(filter: String? = null, filename: String, verbose: Boole
                 "git rev-list --max-parents=0 HEAD".runCommand() // add initial commit
             )
         }
-    if (verbose)
-        println(tags)
+    logger?.info(tags.toString())
     tags.forEachIndexed { i, element ->
         if (i == tags.count() - 1) return@forEachIndexed
         val code = "git rev-list $element --count".runCommand()
-        if (verbose)
-            println("git log --no-merges --pretty=format:%f|%ad $element...${tags[i + 1]}")
+        logger?.info("git log --no-merges --pretty=format:%f|%ad $element...${tags[i + 1]}")
         "git log --no-merges --pretty=format:%f|%ad $element...${tags[i + 1]}".runCommand()
             .split("\n")
             .filter { filter == null || it.contains(filter) }
@@ -63,7 +63,7 @@ fun getTagGroupedGitlog(filter: String? = null, filename: String, verbose: Boole
     val file = File(filename)
     if (!file.exists()) {
         val dir = File(filename.substringBeforeLast("/"))
-        println("create path =${dir}")
+        logger?.info("create path =${dir}")
         dir.mkdirs()
     }
     File(filename).writeText(Json.encodeToString(logEntries))
