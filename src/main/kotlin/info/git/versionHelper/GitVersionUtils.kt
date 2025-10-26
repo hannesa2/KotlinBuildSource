@@ -30,7 +30,7 @@ fun getVersionText(): String {
         "-DIRTY"
     } else ""
 
-    val givenVersion = System.getenv("tag") ?: "git describe".runCommand().trim()
+    val givenVersion = System.getenv("tag") ?: "git describe --tags".runCommand().trim()
     return givenVersion + dirty
 }
 
