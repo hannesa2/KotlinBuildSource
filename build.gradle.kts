@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     `kotlin-dsl`
-    kotlin("plugin.serialization") version "2.2.20"
+    kotlin("plugin.serialization") version embeddedKotlinVersion
 }
 
 repositories {
@@ -20,7 +20,7 @@ tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         // A good modern default. Use a version that matches your project's Kotlin plugin version.
         jvmTarget.set(JvmTarget.JVM_17)
-        languageVersion.set(KotlinVersion.KOTLIN_2_0)
-        apiVersion.set(KotlinVersion.KOTLIN_2_0)
+        languageVersion.set(KotlinVersion.KOTLIN_2_1)
+        apiVersion.set(KotlinVersion.KOTLIN_2_1)
     }
 }
