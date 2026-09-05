@@ -5,14 +5,14 @@ import info.shell.runCommand
 fun getGitOriginRemote(): String {
     val process = "git remote -v".runCommand()
     val values = process.trim().split("\n")
-    val foundLine = values.find {
+    val foundLine : String = values.find {
         it.startsWith("origin") && it.endsWith("(push)")
-    }
+    } ?: "no remote"
     return foundLine
-        ?.replace("origin", "")
-        ?.replace("(push)", "")
-        ?.replace(".git", "")
-        ?.trim()!!
+        .replace("origin", "")
+        .replace("(push)", "")
+        .replace(".git", "")
+        .trim()
 }
 
 fun getGitCommitCount(offset: Int = 0): Int {
